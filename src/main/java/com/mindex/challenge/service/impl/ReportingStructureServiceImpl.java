@@ -22,7 +22,10 @@ public class ReportingStructureServiceImpl implements ReportingStructureService 
     public ReportingStructure read(String id) {
         LOG.debug("Creating Reporting Structure with id [{}]", id);
 
+        //Fetch desired employee from mongo DB
         Employee employee = employeeRepository.findByEmployeeId(id);
+
+        //Instantiateing new reporting structure with an employee will calculate the number of reports.
         ReportingStructure reportingStructure = new ReportingStructure(employee);
 
         if (employee == null) {

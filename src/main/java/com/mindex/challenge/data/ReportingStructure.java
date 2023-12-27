@@ -50,6 +50,7 @@ public class ReportingStructure {
         return employeeInfo(this.employee);
     }
 
+    //Helper function to show a detailed list of the reporting structure for the employee.
     public String employeeInfo(Employee employee) {
         StringBuilder builder = new StringBuilder();
         builder.append(employee.getFirstName() + " " + employee.getLastName() + " - " + employee.getPosition() + "\n");
