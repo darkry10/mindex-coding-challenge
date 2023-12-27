@@ -41,21 +41,24 @@ public class ReportingStructureServiceImplTest {
     }
 
     @Test
-    public void testCreateReadUpdate() {
+    public void testRead() {
         Employee testEmployee1 = new Employee();
         testEmployee1.setFirstName("John");
         testEmployee1.setLastName("Doe");
         testEmployee1.setDepartment("Engineering");
         testEmployee1.setPosition("Developer");
+        Employee createdEmployee1 = restTemplate.postForEntity(employeeUrl, testEmployee1, Employee.class).getBody();
+        
 
         Employee testEmployee2 = new Employee();
         testEmployee2.setFirstName("John");
         testEmployee2.setLastName("Doe");
         testEmployee2.setDepartment("Engineering");
         testEmployee2.setPosition("Developer");
+        Employee createdEmployee2 = restTemplate.postForEntity(employeeUrl, testEmployee2, Employee.class).getBody();
         List<Employee> directReports = new ArrayList<Employee>();
-        directReports.add(testEmployee1);
-        directReports.add(testEmployee2);
+        directReports.add(createdEmployee1);
+        directReports.add(createdEmployee2);
 
         Employee testEmployeeManager = new Employee();
         testEmployeeManager.setFirstName("John");
@@ -65,16 +68,16 @@ public class ReportingStructureServiceImplTest {
         testEmployeeManager.setDirectReports(directReports);
 
         // Create checks
-        Employee createdEmployee = restTemplate.postForEntity(employeeUrl, testEmployeeManager, Employee.class).getBody();
-        ReportingStructure reportingStructure = new ReportingStructure(createdEmployee);
+        Employee createdEmployeeManager = restTemplate.postForEntity(employeeUrl, testEmployeeManager, Employee.class).getBody();
+        ReportingStructure reportingStructure = new ReportingStructure(createdEmployeeManager);
 
-        assertNotNull(createdEmployee.getEmployeeId());
-        assertEmployeeEquivalence(testEmployeeManager, createdEmployee);
+        assertNotNull(createdEmployeeManager.getEmployeeId());
+        assertEmployeeEquivalence(testEmployeeManager, createdEmployeeManager);
 
 
         // Read checks
-        ReportingStructure readReportingStructure = restTemplate.getForEntity(reportingStructureIdUrl, ReportingStructure.class, createdEmployee.getEmployeeId()).getBody();
-        assertEquals(createdEmployee.getEmployeeId(), readReportingStructure.getEmployee().getEmployeeId());
+        ReportingStructure readReportingStructure = restTemplate.getForEntity(reportingStructureIdUrl, ReportingStructure.class, createdEmployeeManager.getEmployeeId()).getBody();
+        assertEquals(createdEmployeeManager.getEmployeeId(), readReportingStructure.getEmployee().getEmployeeId());
         assertReportingStructureEquivalence(reportingStructure, readReportingStructure);
     }
 
